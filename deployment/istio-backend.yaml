@@ -1,0 +1,65 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend-vs
+  namespace: default
+spec:
+  gateways: 
+  - demo-gateway
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        prefix: /v2
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: backend.default.svc.cluster.local
+        subset: v2
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /v1
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: backend.default.svc.cluster.local
+        subset: v1
+        port:
+          number: 80
+   # Catch all: send 80/20% traffic to both versions
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: backend.default.svc.cluster.local
+        subset: v1
+        port:
+          number: 80
+      weight: 80
+    - destination:
+        host: backend.default.svc.cluster.local
+        subset: v2
+        port:
+          number: 80
+      weight: 20
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: backend
+spec:
+  host: backend.default.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+

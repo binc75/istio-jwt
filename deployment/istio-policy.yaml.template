@@ -1,0 +1,16 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "jwt-keycloak"
+spec:
+  targets:
+  - name: backend
+  peers:
+  - mtls: {}
+  origins:
+  - jwt:
+      issuer: "${KEYCLOAK_URL}/auth/realms/istio"
+      jwksUri: "${KEYCLOAK_URL}/auth/realms/istio/protocol/openid-connect/certs"
+      audiences:
+      - account
+  principalBinding: USE_ORIGIN
