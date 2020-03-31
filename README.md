@@ -145,8 +145,15 @@ Optionally you can create ad additional user in keycloak
 ```bash
 # Create user
 kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh create users -r istio -s username=testuser -s enabled=true
+
 # Set user password
 kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh set-password -r istio --username testuser --new-password abc123
+
+# Set a new role (realm role)
+kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh create roles -r istio -s name=backendaccess -s 'description=Access to backend app'
+
+# Assign role to user
+kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh add-roles --uusername testuser --rolename backendaccess -r istio
 ```
 
 ## Istio Policy
