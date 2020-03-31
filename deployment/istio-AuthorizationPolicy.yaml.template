@@ -1,4 +1,5 @@
 # Add a request authentication policy that requires end-user JWT
+# if JWT not valid or expired = 401
 apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
 metadata:
@@ -12,7 +13,7 @@ spec:
   - issuer: "${KEYCLOAK_URL}/auth/realms/istio"
     jwksUri: "${KEYCLOAK_URL}/auth/realms/istio/protocol/openid-connect/certs"
 ---
-# To allow only requests with a valid token create an authorization policy
+# To allow only requests with a valid token, create an authorization policy
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
