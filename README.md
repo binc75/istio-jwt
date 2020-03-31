@@ -4,8 +4,8 @@ The purpose of the demo is to demonstare the ability of ISTIO to do an end-user 
 We are going to setup a *minikube* cluster, install *istio*, install a demo application and install *Keycloak* (https://www.keycloak.org/) to demonstrate how ***JWT authn/authz*** works. 
 
 The workflow will be:
- - the user will get a JWT from keycloak with correct attributes ---("aud": "account")
-   that will be matched againts "audiences" attribute into the Policy object configuration---
+ - the user will get a JWT from keycloak with correct attributes <s>("aud": "account")
+   that will be matched againts "audiences" attribute into the Policy object configuration</s>
  - the user will call the app inside k8s/istio presenting the JTW 
    - if the token is valid the user will get an HTTP 200
    - if the token is not give, is invalid, is expired it will get an HTTP401 (Unauthorized)
