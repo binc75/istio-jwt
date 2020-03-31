@@ -184,7 +184,7 @@ curl -svI http://$INGRESS_HOST:$INGRESS_PORT --header "Authorization: Bearer ${T
 Try now without token or with an invalid or expired one!
 
 
-### Tricks
+### Tricks & Tips
 DEBUG for ingress activation
 ```bash
 $ kubectl exec $(kubectl get pods -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].metadata.name}') -c istio-proxy -n istio-system -- curl -X POST "localhost:15000/logging?level=debug" -s
