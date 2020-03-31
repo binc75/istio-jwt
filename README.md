@@ -158,9 +158,15 @@ kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.
 
 ## Istio Policy
 Activate the istio policy
+### before istio 1.5 (DEPRECATED)
 ```bash
 export KEYCLOAK_URL=$(minikube -p istio-mk -n keycloak-ns service keycloak --url)
 cat deployment/istio-policy.yaml.template | envsubst | kubectl apply -f -
+```
+### from istio 1.5
+```bash
+export KEYCLOAK_URL=$(minikube -p istio-mk -n keycloak-ns service keycloak --url)
+cat deployment/istio-AuthorizationPolicy.yaml.template | envsubst | kubectl apply -f -
 ```
 
 ## Checkout the feature

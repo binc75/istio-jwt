@@ -1,0 +1,32 @@
+# Add a request authentication policy that requires end-user JWT
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+ name: backend
+ namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  jwtRules:
+  - issuer: "${KEYCLOAK_URL}/auth/realms/istio"
+    jwksUri: "${KEYCLOAK_URL}/auth/realms/istio/protocol/openid-connect/certs"
+---
+# To allow only requests with a valid token create an authorization policy
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: backend
+ namespace: default
+spec:
+ selector:
+   matchLabels:
+     app: backend
+ action: ALLOW
+ rules:
+ - from:
+   - source:
+       requestPrincipals: ["*"]
+   when:  
+    - key: request.auth.claims[preferred_username]
+      values: ["testuser2"]
