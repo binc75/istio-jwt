@@ -140,12 +140,13 @@ CLIENT_SECRET=$(kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns
 
 # Export the variable for further use
 export CLIENT_SECRET
-
+```
+Optionally you can create ad additional user in keycloak
+```bash
 # Create user
 kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh create users -r istio -s username=testuser -s enabled=true
 # Set user password
 kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh set-password -r istio --username testuser --new-password abc123
-
 ```
 
 ## Istio Policy
