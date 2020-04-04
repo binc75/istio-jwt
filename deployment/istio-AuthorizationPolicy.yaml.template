@@ -28,4 +28,4 @@ spec:
  - from:
    when:  
     - key: request.auth.claims[preferred_username]
-      values: ["testuser2"]
+      values: ["testuser"]
