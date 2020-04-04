@@ -4,8 +4,8 @@ The purpose of the demo is to demonstare the ability of ISTIO to do an end-user 
 We are going to setup a *minikube* cluster, install *istio*, install a demo application and install *Keycloak* (https://www.keycloak.org/) to demonstrate how ***JWT authn/authz*** works. 
 
 The workflow will be:
- - the user will get a JWT from keycloak with correct attributes <s>("aud": "account")
-   that will be matched againts "audiences" attribute into the Policy object configuration</s>
+ - the user will get a JWT from keycloak with correct attributes ("preferred_username": "testuser")
+   that will be matched againts the AuthorizationPolicy object configuration
  - the user will call the app inside k8s/istio presenting the JTW 
    - if the token is valid the user will get an HTTP 200
    - if the token is not give, is invalid, is expired it will get an HTTP401 (Unauthorized)
@@ -119,6 +119,7 @@ Now configure Keycloak as following:
    - Client ID: *istio*
    - Access Type: *confidential*
    - Valid Redirect URIs: output of command **echo "http://$INGRESS_HOST:$INGRESS_PORT"** 
+ - create a user named "testuser"
 
 Take note of the **Secret** from the Credentials tab in the Client configuration to be used further ahead. 
 
@@ -141,7 +142,7 @@ CLIENT_SECRET=$(kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns
 # Export the variable for further use
 export CLIENT_SECRET
 ```
-Optionally you can create ad additional user in keycloak
+Create a user named "testuser"
 ```bash
 # Create user
 kubectl exec -it -n keycloak-ns $(kubectl get pod -n keycloak-ns -o jsonpath='{.items[0].metadata.name}') -- /opt/jboss/keycloak/bin/kcadm.sh create users -r istio -s username=testuser -s enabled=true
@@ -175,11 +176,11 @@ Configure the client secret to get the access token from Keycloak.
 # Only needed if you configured Keycloak manualy
 export CLIENT_SECRET="XXXXX XXXXX XXXXXX XXXXX"
 ```
-Get the token from Keycloak (emulating an application)
+(optional)Get the token from Keycloak (emulating an application) (**Only as reference: crete a TOKEN as user!**)
 ```bash
 TOKEN=$(curl -s -d "audience=istio" -d "client_id=istio" -d "client_secret=$CLIENT_SECRET" -d "grant_type=client_credentials" "$(minikube -p istio-mk -n keycloak-ns service keycloak --url)/auth/realms/istio/protocol/openid-connect/token" | jq -r ".access_token")
 ```
-Alternative TOKEN (emulating a simple user) (optional)
+Get a TOKEN emulating a simple user
 ```bash
 TOKEN=$(curl -s -d "client_id=istio" -d "client_secret=$CLIENT_SECRET" -d 'username=testuser' -d 'password=abc123' -d 'grant_type=password' "$(minikube -p istio-mk -n keycloak-ns service keycloak --url)/auth/realms/istio/protocol/openid-connect/token" | jq -r ".access_token")
 ```
