@@ -13,7 +13,6 @@ spec:
   - issuer: "${KEYCLOAK_URL}/auth/realms/istio"
     jwksUri: "${KEYCLOAK_URL}/auth/realms/istio/protocol/openid-connect/certs"
 ---
-# To allow only requests with a valid token, create an authorization policy
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
@@ -23,11 +22,9 @@ spec:
  selector:
    matchLabels:
      app: backend
- action: ALLOW
+ action: DENY
  rules:
- - from:
-   - source:
-       requestPrincipals: ["*"]
-   when:  
-    - key: request.auth.claims[preferred_username]
-      values: ["testuser2"]
+   - when:
+     key: request.auth.claims[preferred_username]
+     notvalues: ["testuser2"]
+
