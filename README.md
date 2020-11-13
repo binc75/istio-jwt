@@ -23,7 +23,7 @@ minikube start -p istio-mk --memory=8192 --cpus=3 \
 
 ## ISTIO setup
 ```bash
-curl -L https://istio.io/downloadIstio | sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.5.4 sh -
 cd istio-1.*
 export PATH=$PWD/bin:$PATH
 cd ..
